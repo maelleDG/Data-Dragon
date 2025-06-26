@@ -3,3 +3,5 @@
 *.csv
 *.parquet
 __pycache__
+.env
+*pdf
