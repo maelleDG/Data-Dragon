@@ -10,23 +10,30 @@ GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 st.set_page_config(page_title="Projet 3", layout="wide")
 
 
- # Config de l'API
+# Config de l'API
 genai.configure(api_key=GOOGLE_API_KEY)
- # Prompt système
+# Prompt système
 system_prompt = """
 Tu es un spécialiste en cyber sécurité. Tu donnes des réponses précises pour un public qui te donnera, soit une URL, une adresse mail ( a vérifier sur : https://haveibeenpwned.com/)
 ou un fichier que tu verifera, analysera afin de savoir si ce dernier est sûr.
 Si la question ne concerne pas la cyber sécurité, indique que tu ne peux répondre qu'à ce sujet.
 """
 
+
 # Fonction pour initialiser le chat
 def init_chat():
     model = genai.GenerativeModel("gemini-2.0-flash")
-    chat = model.start_chat(history=[
-        {"role": "user", "parts": [system_prompt]},
-        {"role": "model", "parts": ["Compris, je suis prêt à te proposer des recommandations."]}
-    ])
+    chat = model.start_chat(
+        history=[
+            {"role": "user", "parts": [system_prompt]},
+            {
+                "role": "model",
+                "parts": ["Compris, je suis prêt à te proposer des recommandations."],
+            },
+        ]
+    )
     return chat
+
 
 # Initialisation du chat
 if "chat" not in st.session_state:
@@ -65,4 +72,3 @@ if st.button("Réinitialiser SécuBot 🤖", key="reset_button"):
         {"role": "assistant", "text": "URL, Adresse mail ou fichier  ? 🔎"}
     ]
     st.rerun()
-   

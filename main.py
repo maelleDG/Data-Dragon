@@ -1,6 +1,3 @@
-def main():
-    print("Hello from data-dragon!")
+import streamlit as st
 
-
-if __name__ == "__main__":
-    main()
+st.title("Premier docker")
