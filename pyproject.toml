@@ -5,8 +5,8 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "beautifulsoup4>=4.13.4",
-    "ipykernel>=6.29.5",
+    "dotenv>=0.9.9",
+    "google-generativeai>=0.8.5",
     "matplotlib>=3.10.3",
     "pandas>=2.3.0",
     "pdfplumber>=0.11.7",
