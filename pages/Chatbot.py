@@ -1,15 +1,21 @@
 import streamlit as st
 import pandas as pd
 import google.generativeai as genai
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
 st.set_page_config(page_title="Projet 3", layout="wide")
 
 
  # Config de l'API
-genai.configure(api_key="AIzaSyAG8NgAuuACAmFoiG8xEVKzNbrDKrcx7Bc")
+genai.configure(api_key=GOOGLE_API_KEY)
  # Prompt système
 system_prompt = """
-Tu es un spécialiste en cyber sécurité. Tu donnes des réponses précises pour un public qui te donnera, soit une URL, une adresse mail ( a vérifier sur : https://haveibeenpwned.com/) ou un fichier que tu verifera, analysera afin de savoir si ce dernier est sûr.
+Tu es un spécialiste en cyber sécurité. Tu donnes des réponses précises pour un public qui te donnera, soit une URL, une adresse mail ( a vérifier sur : https://haveibeenpwned.com/)
+ou un fichier que tu verifera, analysera afin de savoir si ce dernier est sûr.
 Si la question ne concerne pas la cyber sécurité, indique que tu ne peux répondre qu'à ce sujet.
 """
 
