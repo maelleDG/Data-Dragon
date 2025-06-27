@@ -4,4 +4,4 @@
 *.parquet
 __pycache__
 .env
-*pdf
+*.pdf
