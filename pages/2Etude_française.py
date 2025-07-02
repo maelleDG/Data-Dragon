@@ -85,7 +85,7 @@ with st.expander("Cliquez pour voir le marché global de la cybersécurité en F
     )
 
     # --- Début du code pour les vignettes rondes ---
-    st.subheader("Informations Clés (Vignettes Rondes)")
+    st.subheader("Informations Clés")
 
     st.markdown(
         """
@@ -154,74 +154,6 @@ with st.expander("Cliquez pour voir le marché global de la cybersécurité en F
         unsafe_allow_html=True,
     )
     # --- Fin du code pour les vignettes rondes ---
-
-    # Préparer les données pour Plotly Express
-    df_market = pd.DataFrame(
-        {
-            "Année": [2024, 2029],
-            "Taille du Marché (Milliards USD)": [market_size_2024, market_size_2029],
-            "Indicateur": ["Taille du Marché 2024", "Taille du Marché 2029"],
-        }
-    )
-
-    df_market["CAGR"] = [
-        cagr_2024_2029,
-        cagr_2024_2029,
-    ]
-
-    fig_bubble_cagr_size = px.scatter(
-        df_market,
-        x="Année",
-        y="Taille du Marché (Milliards USD)",
-        size="CAGR",
-        color="Année",
-        hover_name="Indicateur",
-        title="Taille du Marché de la Cybersécurité par Année (Taille de la bulle = CAGR)",
-        labels={
-            "Taille du Marché (Milliards USD)": "Taille du Marché (Milliards USD)",
-            "Année": "Année",
-        },
-    )
-    st.plotly_chart(fig_bubble_cagr_size, use_container_width=True)
-
-    st.subheader("Visualisation des métriques clés (Graphique à bulles Plotly)")
-
-    df_all_metrics = pd.DataFrame(
-        {
-            "Métrique": ["Taille Marché 2024", "Taille Marché 2029", "CAGR"],
-            "Valeur Numérique": [market_size_2024, market_size_2029, cagr_2024_2029],
-            "Catégorie": ["Marché", "Marché", "Croissance"],
-            "Unité": ["Milliards USD", "Milliards USD", "%"],
-        }
-    )
-
-    fig_generic_bubble = px.scatter(
-        df_all_metrics,
-        x="Métrique",
-        y="Valeur Numérique",
-        size="Valeur Numérique",
-        color="Catégorie",
-        hover_name="Métrique",
-        text="Valeur Numérique",
-        title="Métriques Clés du Marché de la Cybersécurité",
-        labels={"Valeur Numérique": "Valeur"},
-    )
-    fig_generic_bubble.update_traces(textposition="top center")
-    st.plotly_chart(fig_generic_bubble, use_container_width=True)
-
-    st.subheader("Affichage en vignettes Streamlit (pour comparaison)")
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.metric(label="Taille du Marché (2024)", value=f"{market_size_2024_str}")
-    with col2:
-        st.metric(label="Taille du Marché (2029)", value=f"{market_size_2029_str}")
-    with col3:
-        st.metric(label="CAGR (2024-2029)", value=f"{cagr_2024_2029_str}")
-
-    st.subheader("Valeurs brutes extraites")
-    st.write(f"Taille du Marché (2024): {market_size_2024_str}")
-    st.write(f"Taille du Marché (2029): {market_size_2029_str}")
-    st.write(f"CAGR (2024-2029): {cagr_2024_2029_str}")
 
 
 with st.expander("Cliquez pour voir les principales menaces en France"):
