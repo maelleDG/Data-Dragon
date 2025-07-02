@@ -12,14 +12,11 @@ Développer un tableau de bord interactif pour agréger, analyser et visualiser 
 
 2. Développement de la stratégie commerciale en France (Partie importante)
 Comparaison du marché US vs FR
-    - KPI: 
     - Etude US
         - Historique des menaces
-        - Solution
     - Etude FR
         - Historique des menaces
-        - Solution
-    - Axe d'amélioration FR
+    - Solution FR
 
 3. Revue de presse / Veille Techno
 
