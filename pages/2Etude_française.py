@@ -5,6 +5,10 @@ import pandas as pd
 import plotly.express as px
 import matplotlib.pyplot as plt
 import theme  # Importe votre fichier de thème
+import seaborn as sns
+from matplotlib.ticker import PercentFormatter
+from streamlit_extras.stylable_container import stylable_container
+from streamlit_extras.colored_header import colored_header
 
 # Applique les configurations de page et le thème
 theme.set_page_defaults()  # Optionnel si main.py gère déjà la config globale, mais bonne pratique
@@ -99,8 +103,8 @@ with st.expander("Cliquez pour voir le marché global de la cybersécurité en F
         margin-bottom: 30px;
     }
     .round-metric {
-        width: 160px; /* Diamètre de la bulle */
-        height: 160px;
+        width: 280px; /* Diamètre de la bulle */
+        height: 280px;
         border-radius: 50%; /* Rend la forme circulaire */
         display: flex;
         flex-direction: column;
@@ -116,13 +120,13 @@ with st.expander("Cliquez pour voir le marché global de la cybersécurité en F
         transform: translateY(-5px); /* Effet de survol */
     }
     .round-metric-label {
-        font-size: 0.9em;
+        font-size: 1.2em;
         font-weight: normal;
         margin-bottom: 5px;
         line-height: 1.2;
     }
     .round-metric-value {
-        font-size: 1.4em;
+        font-size: 2.5em;
         font-weight: bold;
     }
     /* Couleurs pour chaque bulle */
@@ -154,7 +158,85 @@ with st.expander("Cliquez pour voir le marché global de la cybersécurité en F
         unsafe_allow_html=True,
     )
     # --- Fin du code pour les vignettes rondes ---
+    
+    # GRAPHIQUE Répartition des budgets IT
+    # Barre violette en haut
+    st.markdown("""
+    <div style="background-color:#6a0dad; padding: 2px; border-radius: 8px; margin-bottom: 20px;"></div>
+    """, unsafe_allow_html=True)
 
+    # Titre centré
+    st.markdown("""
+    <h2 style='text-align: center;'>💻 Répartition des budgets IT alloués à la cybersécurité</h2>
+    """, unsafe_allow_html=True)
+
+    # Mise en page en colonnes
+    col1, col2 = st.columns([2, 1])
+
+    # Données
+    data_budgets = {
+        'Secteur': ['Finance', 'Industrie', 'Santé', 'Commerce', 'Services publics'],
+        'Budget IT (%)': [8, 5, 6, 4.5, 6]
+    }
+
+    df_budgets = pd.DataFrame(data_budgets)
+
+    # Création du graphique
+    fig, ax = plt.subplots(figsize=(8, 4))
+    
+
+    # Fond noir
+    fig.patch.set_facecolor('black')
+    ax.set_facecolor('black')
+
+    # Graphique
+    sns.barplot(
+        data=df_budgets,
+        x='Secteur',
+        y='Budget IT (%)',
+        palette='pastel',
+        ax=ax
+    )
+
+    
+    # Titre en blanc
+    ax.set_title('Part du budget IT dédiée à la cybersécurité par secteur', fontsize=16, pad=20, color='white')
+
+    # Axe Y en blanc
+    ax.set_ylabel('Pourcentage du budget IT', color='white')
+    ax.set_xlabel('')
+
+    # Ticks en blanc
+    ax.tick_params(axis='x', colors='white')
+    ax.tick_params(axis='y', colors='white')
+
+    # Bordures et graduations en blanc
+    for spine in ax.spines.values():
+        spine.set_color('white')
+
+    ax.yaxis.set_major_formatter(PercentFormatter(decimals=0))
+    plt.xticks(rotation=30, ha='right')
+
+# Afficher le graphique dans une colonne étroite
+    col1, col2, col3 = st.columns([1, 2, 1])  # Colonne centrale plus large
+
+    with col2:  # Affichage dans la colonne centrale
+        st.pyplot(fig)
+
+    # Informations
+    st.markdown("""
+    ### 💡 Informations clés :
+    - Le secteur **Finance** est le plus investi en cybersécurité.
+    - Les **Services publics** et la **Santé** maintiennent un budget stable.
+    - Le secteur **Commerce** reste en retrait.
+    """)
+
+    st.markdown("#### 🔎 Analyse rapide :")
+    st.info("👉 Les secteurs à forte exposition aux risques financiers allouent logiquement une part plus importante de leur budget IT à la cybersécurité.")
+
+
+
+##########################################################################################################
 
 with st.expander("Cliquez pour voir les principales menaces en France"):
     st.markdown(
