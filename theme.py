@@ -91,7 +91,7 @@ def set_page_defaults():
     st.set_page_config(
         page_title="Cyber Dragon - Data & Cybersecurity Agency",
         page_icon="🛡️",
-        layout="centered",  # ou "wide"
+        layout="wide",
         initial_sidebar_state="expanded",
     )
 
@@ -100,12 +100,12 @@ def set_page_defaults():
 from PIL import Image
 
 
-def display_logo(path="logo.png"):
+def display_logo(path="logo.png", width=None):
     try:
         logo = Image.open(path)
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
-            st.image(logo, use_container_width=True)
+            st.image(logo, width=width)
     except FileNotFoundError:
         st.error(
             f"Le fichier '{path}' n'a pas été trouvé. Assurez-vous qu'il est dans le bon répertoire."
