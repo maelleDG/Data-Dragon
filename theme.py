@@ -91,7 +91,7 @@ def set_page_defaults():
     st.set_page_config(
         page_title="Cyber Dragon - Data & Cybersecurity Agency",
         page_icon="🛡️",
-        layout="wide",
+        layout="wide",  # ou "wide"
         initial_sidebar_state="expanded",
     )
 
