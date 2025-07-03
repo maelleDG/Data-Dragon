@@ -16,6 +16,9 @@ pages = {
     "Analyse du marché": [  # Equivalent de "Étude française"
         st.Page("pages/2Etude_française.py", title="Étude française"),
     ],
+    "Solutions & partenaires": [
+        st.Page("pages/5Partenaires.py", title="Solutions & Partenaires"),
+    ],
     "Chatbot": [
         st.Page("pages/meteo.py", title="Cyber Météo"),
         st.Page(
