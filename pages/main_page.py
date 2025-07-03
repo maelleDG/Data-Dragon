@@ -3,13 +3,16 @@ import theme  # Importe votre fichier de thème
 
 theme.set_page_defaults()
 
-# --- Contenu de la Page Principale ---
-theme.display_logo()  # Utilisez la fonction du thème pour afficher le logo
+col_left, col_center, col_right = st.columns([1, 2, 1])
 
-st.markdown(
-    f"<p class='slogan'>DATA ANALYTICS • AND CYBERSECURITY AGENCY</p>",
-    unsafe_allow_html=True,
-)
+# --- Contenu de la Page Principale ---
+with col_center:
+    theme.display_logo(width=300)  # Utilisez la fonction du thème pour afficher le logo
+
+    st.markdown(
+        f"<p class='slogan'>DATA ANALYTICS • AND CYBERSECURITY AGENCY</p>",
+        unsafe_allow_html=True,
+    )
 
 # Introduction (avec les balises <strong> pour le gras)
 st.markdown(
@@ -22,7 +25,10 @@ Bienvenue chez <strong>Cyber Dragon</strong>, votre partenaire de confiance pour
 )
 
 # --- Nos Services (Section) ---
-st.markdown(f"<h2 class='section-title'>Nos Services</h2>", unsafe_allow_html=True)
+st.markdown(
+    f"<h2 class='section-title' style='text-align: center;'>Nos Services</h2>",
+    unsafe_allow_html=True,
+)
 
 col_service1, col_service2 = st.columns(2)
 
@@ -59,15 +65,28 @@ with col_service2:
     )
 
 # --- Appel à l'Action ---
+
+# --- Hack CSS pour centrer le st.button même sans colonnes ---
 st.markdown(
-    f"<h2 class='section-title' style='text-align: center;'>Prêt à sécuriser et optimiser votre avenir ?</h2>",
+    """
+    <style>
+    div.stButton > button {
+        display: block;
+        margin: 0 auto;
+    }
+    </style>
+    """,
     unsafe_allow_html=True,
 )
 
-col_button1, col_button2, col_button3 = st.columns([1, 2, 1])
-with col_button2:
-    if st.button("Contactez-nous dès aujourd'hui !"):
-        st.success("Merci de votre intérêt ! Nous vous contacterons bientôt.")
+# --- Appel à l'Action ---
+st.markdown(
+    "<h2 style='text-align: center;'>Prêt à sécuriser et optimiser votre avenir ?</h2>",
+    unsafe_allow_html=True,
+)
+
+if st.button("Contactez-nous dès aujourd'hui !"):
+    st.success("Merci de votre intérêt ! Nous vous contacterons bientôt.")
 
 # --- Pied de page (optionnel) ---
 st.markdown("---")

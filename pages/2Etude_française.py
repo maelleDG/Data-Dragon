@@ -5,27 +5,15 @@ import pandas as pd
 import plotly.express as px
 import matplotlib.pyplot as plt
 import theme  # Importe votre fichier de thème
+import seaborn as sns
+from matplotlib.ticker import PercentFormatter
+from streamlit_extras.stylable_container import stylable_container
+from streamlit_extras.colored_header import colored_header
+from plotly.subplots import make_subplots
 
 # Applique les configurations de page et le thème
 theme.set_page_defaults()  # Optionnel si main.py gère déjà la config globale, mais bonne pratique
 theme.apply_theme()
-
-st.title("Nos Services Détaillés")
-
-# Contenu spécifique à la page des services
-st.markdown(
-    """
-<div class="big-text">
-Découvrez en détail comment Cyber Dragon peut transformer votre approche de la sécurité et de l'analyse.
-</div>
-""",
-    unsafe_allow_html=True,
-)
-
-st.subheader("Audit et Pentest")
-st.write("Nous identifions les vulnérabilités de vos systèmes...")
-
-# ... et ainsi de suite ...
 
 st.markdown(
     """
@@ -33,6 +21,18 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
+# Contenu spécifique à la page des services
+st.markdown(
+    """
+<div class="big-text">
+Comprenez le contexte actuel du marché français de la cybersécurité et découvrez en détail comment Cyber Dragon peut transformer votre approche de la sécurité et de l'analyse face à ces menaces grandissantes.
+</div>
+""",
+    unsafe_allow_html=True,
+)
+
+st.markdown("""---""")
 
 with st.expander("Cliquez pour voir le marché global de la cybersécurité en France"):
     # Le code de scraping
@@ -85,7 +85,7 @@ with st.expander("Cliquez pour voir le marché global de la cybersécurité en F
     )
 
     # --- Début du code pour les vignettes rondes ---
-    st.subheader("Informations Clés (Vignettes Rondes)")
+    st.subheader("Informations Clés")
 
     st.markdown(
         """
@@ -99,8 +99,8 @@ with st.expander("Cliquez pour voir le marché global de la cybersécurité en F
         margin-bottom: 30px;
     }
     .round-metric {
-        width: 160px; /* Diamètre de la bulle */
-        height: 160px;
+        width: 280px; /* Diamètre de la bulle */
+        height: 280px;
         border-radius: 50%; /* Rend la forme circulaire */
         display: flex;
         flex-direction: column;
@@ -116,13 +116,13 @@ with st.expander("Cliquez pour voir le marché global de la cybersécurité en F
         transform: translateY(-5px); /* Effet de survol */
     }
     .round-metric-label {
-        font-size: 0.9em;
+        font-size: 1.2em;
         font-weight: normal;
         margin-bottom: 5px;
         line-height: 1.2;
     }
     .round-metric-value {
-        font-size: 1.4em;
+        font-size: 2.5em;
         font-weight: bold;
     }
     /* Couleurs pour chaque bulle */
@@ -154,77 +154,93 @@ with st.expander("Cliquez pour voir le marché global de la cybersécurité en F
         unsafe_allow_html=True,
     )
     # --- Fin du code pour les vignettes rondes ---
+    
+    # GRAPHIQUE Répartition des budgets IT
+    # Barre violette en haut
+    st.markdown("""
+    <div style="background-color:#6a0dad; padding: 2px; border-radius: 8px; margin-bottom: 20px;"></div>
+    """, unsafe_allow_html=True)
 
-    # Préparer les données pour Plotly Express
-    df_market = pd.DataFrame(
-        {
-            "Année": [2024, 2029],
-            "Taille du Marché (Milliards USD)": [market_size_2024, market_size_2029],
-            "Indicateur": ["Taille du Marché 2024", "Taille du Marché 2029"],
-        }
+    # Titre centré
+    st.markdown("""
+    <h2 style='text-align: center;'>💻 Répartition des budgets IT alloués à la cybersécurité</h2>
+    """, unsafe_allow_html=True)
+
+    # Mise en page en colonnes
+    col1, col2 = st.columns([2, 1])
+
+    # Données
+    data_budgets = {
+        'Secteur': ['Finance', 'Industrie', 'Santé', 'Commerce', 'Services publics'],
+        'Budget IT (%)': [8, 5, 6, 4.5, 6]
+    }
+
+    df_budgets = pd.DataFrame(data_budgets)
+
+    # Création du graphique
+    fig, ax = plt.subplots(figsize=(8, 4))
+    
+
+    # Fond noir
+    fig.patch.set_facecolor('black')
+    ax.set_facecolor('black')
+
+    # Graphique
+    sns.barplot(
+        data=df_budgets,
+        x='Secteur',
+        y='Budget IT (%)',
+        palette='pastel',
+        ax=ax
     )
 
-    df_market["CAGR"] = [
-        cagr_2024_2029,
-        cagr_2024_2029,
-    ]
+    
+    # Titre en blanc
+    ax.set_title('Part du budget IT dédiée à la cybersécurité par secteur', fontsize=16, pad=20, color='white')
 
-    fig_bubble_cagr_size = px.scatter(
-        df_market,
-        x="Année",
-        y="Taille du Marché (Milliards USD)",
-        size="CAGR",
-        color="Année",
-        hover_name="Indicateur",
-        title="Taille du Marché de la Cybersécurité par Année (Taille de la bulle = CAGR)",
-        labels={
-            "Taille du Marché (Milliards USD)": "Taille du Marché (Milliards USD)",
-            "Année": "Année",
-        },
-    )
-    st.plotly_chart(fig_bubble_cagr_size, use_container_width=True)
+    # Axe Y en blanc
+    ax.set_ylabel('Pourcentage du budget IT', color='white')
+    ax.set_xlabel('')
 
-    st.subheader("Visualisation des métriques clés (Graphique à bulles Plotly)")
+    # Ticks en blanc
+    ax.tick_params(axis='x', colors='white')
+    ax.tick_params(axis='y', colors='white')
 
-    df_all_metrics = pd.DataFrame(
-        {
-            "Métrique": ["Taille Marché 2024", "Taille Marché 2029", "CAGR"],
-            "Valeur Numérique": [market_size_2024, market_size_2029, cagr_2024_2029],
-            "Catégorie": ["Marché", "Marché", "Croissance"],
-            "Unité": ["Milliards USD", "Milliards USD", "%"],
-        }
-    )
+    # Bordures et graduations en blanc
+    for spine in ax.spines.values():
+        spine.set_color('white')
 
-    fig_generic_bubble = px.scatter(
-        df_all_metrics,
-        x="Métrique",
-        y="Valeur Numérique",
-        size="Valeur Numérique",
-        color="Catégorie",
-        hover_name="Métrique",
-        text="Valeur Numérique",
-        title="Métriques Clés du Marché de la Cybersécurité",
-        labels={"Valeur Numérique": "Valeur"},
-    )
-    fig_generic_bubble.update_traces(textposition="top center")
-    st.plotly_chart(fig_generic_bubble, use_container_width=True)
+    ax.yaxis.set_major_formatter(PercentFormatter(decimals=0))
+    plt.xticks(rotation=30, ha='right')
 
-    st.subheader("Affichage en vignettes Streamlit (pour comparaison)")
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.metric(label="Taille du Marché (2024)", value=f"{market_size_2024_str}")
-    with col2:
-        st.metric(label="Taille du Marché (2029)", value=f"{market_size_2029_str}")
-    with col3:
-        st.metric(label="CAGR (2024-2029)", value=f"{cagr_2024_2029_str}")
+# Afficher le graphique dans une colonne étroite
+    col1, col2, col3 = st.columns([1, 2, 1])  # Colonne centrale plus large
 
-    st.subheader("Valeurs brutes extraites")
-    st.write(f"Taille du Marché (2024): {market_size_2024_str}")
-    st.write(f"Taille du Marché (2029): {market_size_2029_str}")
-    st.write(f"CAGR (2024-2029): {cagr_2024_2029_str}")
+    with col2:  # Affichage dans la colonne centrale
+        st.pyplot(fig)
 
+    # Informations
+    st.markdown("""
+    ### 💡 Informations clés :
+    - Le secteur **Finance** est le plus investi en cybersécurité.
+    - Les **Services publics** et la **Santé** maintiennent un budget stable.
+    - Le secteur **Commerce** reste en retrait.
+    """)
+
+    st.markdown("#### 🔎 Analyse rapide :")
+    st.info("👉 Les secteurs à forte exposition aux risques financiers allouent logiquement une part plus importante de leur budget IT à la cybersécurité.")
+
+
+
+##########################################################################################################
 
 with st.expander("Cliquez pour voir les principales menaces en France"):
+    st.markdown(
+        """
+        ### Le paysage des menaces cybernétiques est de plus en plus complexe et diversifié, impactant un large éventail d'acteurs. 
+        Voici les principales formes de cyberattaques observées récemment :
+        """
+    )
     st.markdown(
         """
             - Rançongiciels (Ransomware) : L'activité des rançongiciels reste à un niveau élevé. En 2023, le nombre d'attaques par rançongiciel portées à la connaissance de l'ANSSI a augmenté de 30% par rapport à 2022. Les TPE/PME/ETI, collectivités territoriales et établissements de santé sont particulièrement ciblés.
@@ -259,39 +275,48 @@ with st.expander("Cliquez pour voir les principales menaces en France"):
 
         # Création du graphique à barres
         fig, ax = plt.subplots(
-            figsize=(12, 7)
+            figsize=(10, 6)
         )  # Ajuster la taille du graphique si nécessaire
         df_indexed.plot.bar(ax=ax, width=0.8)  # 'width' ajuste l'épaisseur des barres
+
+        fig.patch.set_facecolor("black")
+        ax.set_facecolor("black")
 
         # Personnalisation du graphique
         ax.set_title(
             "Répartition des victimes de rançongiciel en France (2023 vs 2024)",
             fontsize=16,
+            color="white",
         )
-        ax.set_xlabel("Types d'organisations", fontsize=12)
-        ax.set_ylabel("Pourcentage de victimes (%)", fontsize=12)
-        ax.legend(title="Année", fontsize=10)  # Titre de la légende
+        ax.set_xlabel("Types d'organisations", fontsize=10, color="white")
+        ax.set_ylabel("Pourcentage de victimes (%)", fontsize=10, color="white")
+        ax.legend(title="Année", fontsize=10, labelcolor="white")  # Titre de la légende
         plt.xticks(
-            rotation=45, ha="right"
+            rotation=45, ha="right", color="white"
         )  # Rotation des étiquettes de l'axe des x pour une meilleure lisibilité
+        ax.tick_params(axis="x", labelsize=8, color="white")
         plt.grid(
-            axis="y", linestyle="--", alpha=0.7
+            axis="y", linestyle="--", alpha=0.7, color="gray"
         )  # Ajout d'une grille légère sur l'axe y
 
         # Afficher les valeurs sur les barres
         for container in ax.containers:
             ax.bar_label(
-                container, fmt="%.0f%%", label_type="edge", fontsize=9
+                container, fmt="%.0f%%", label_type="edge", fontsize=9, color="white"
             )  # Affiche les pourcentages
 
         plt.tight_layout()  # Ajuste les marges pour que tout rentre
         return fig  # Retourne l'objet figure Matplotlib
 
-    # Titre de l'application Streamlit
-    st.title("Analyse des menaces de rançongiciel en France")
-
+    col1, col2, col3 = st.columns([1, 4, 1])
     # Afficher le graphique
-    st.pyplot(plot_ransomware_data())
+    with col2:
+        # Titre de l'application Streamlit
+        st.markdown(
+            "<h3 style='text-align: center;'>Analyse des menaces de rançongiciel en France</h3>",
+            unsafe_allow_html=True,
+        )
+        st.pyplot(plot_ransomware_data())
 
     # Vous pouvez ajouter plus d'éléments à votre application Streamlit ici, par exemple:
     st.write(
@@ -299,4 +324,161 @@ with st.expander("Cliquez pour voir les principales menaces en France"):
     Cette application présente la répartition des victimes de rançongiciel en France pour les années 2023 et 2024.
     Les données montrent les différents types d'organisations affectées et le pourcentage qu'elles représentent.
     """
+    )
+
+with st.expander("Cliquez pour voir l'évolution des incidents en France"):
+    try:
+        df1 = pd.read_csv("Principales menaces en France - Evolution des incidents.csv")
+
+        # S'assurer que la colonne 'Années' est de type numérique
+        df1["Années"] = df1["Années"].astype(int)
+
+        # Convertir 'Nombres signalements' en numérique, en forçant les erreurs à NaN
+        df1["Nombres signalements"] = pd.to_numeric(
+            df1["Nombres signalements"], errors="coerce"
+        )
+
+        # Créer une copie de la colonne pour l'interpolation afin de ne pas modifier les données originales
+        nombres_signalements_interp = df1["Nombres signalements"].interpolate(
+            method="linear"
+        )
+
+        # Préparer les étiquettes de texte pour le graphique des signalements
+        df1["Texte Signalements"] = df1.apply(
+            lambda row: (
+                f"{int(row['Nombres signalements'])}"
+                if pd.notna(row["Nombres signalements"])
+                else f"{int(nombres_signalements_interp[row.name])}*"
+            ),  # row.name est l'index de la ligne
+            axis=1,
+        )
+        # Assurez-vous d'utiliser la série interpolée pour la colonne du graphique
+        df1["Nombres signalements interpolé"] = nombres_signalements_interp
+
+        # 1. Créer le premier graphique (Nombres incidents) avec Plotly Express
+        fig1_px = px.line(
+            df1,
+            x="Années",
+            y="Nombres incidents",
+            title="Évolution du Nombre d'Incidents de Sécurité",
+            markers=True,
+            line_shape="linear",  # 'linear' ou 'spline' pour des courbes lisses
+            color_discrete_sequence=["royalblue"],
+            text="Nombres incidents",  # Affiche les valeurs sur les points
+        )
+        fig1_px.update_traces(
+            mode="lines+markers+text",
+            textposition="top center",  # Position du texte au-dessus des points
+        )
+        fig1_px.update_layout(
+            xaxis_title="Année",
+            yaxis_title="Nombre d'Incidents",
+            xaxis_tickmode="array",
+            xaxis_tickvals=df1["Années"].unique().tolist(),
+            hovermode="x unified",  # Améliore l'interactivité au survol
+        )
+
+        # 2. Créer le deuxième graphique (Nombres signalements) avec Plotly Express
+        fig2_px = px.line(
+            df1,
+            x="Années",
+            y="Nombres signalements interpolé",  # Utilisez la colonne interpolée
+            title="Évolution du Nombre de Signalements",
+            markers=True,
+            line_shape="linear",
+            color_discrete_sequence=["coral"],
+            text="Texte Signalements",  # Utilisez la colonne de texte personnalisée
+        )
+        fig2_px.update_traces(mode="lines+markers+text", textposition="top center")
+        fig2_px.update_layout(
+            xaxis_title="Année",
+            yaxis_title="Nombre de Signalements",
+            xaxis_tickmode="array",
+            xaxis_tickvals=df1["Années"].unique().tolist(),
+            hovermode="x unified",
+        )
+
+        # 3. Combiner les deux graphiques en sous-graphiques avec make_subplots
+        fig = make_subplots(
+            rows=1,
+            cols=2,
+            subplot_titles=(
+                "Évolution du Nombre d'Incidents de Sécurité",
+                "Évolution du Nombre de Signalements",
+            ),
+            shared_xaxes=True,  # Partage l'axe des X
+        )
+
+        # Ajouter les traces du premier graphique au premier sous-graphique
+        for trace in fig1_px.data:
+            fig.add_trace(trace, row=1, col=1)
+
+        # Ajouter les traces du deuxième graphique au deuxième sous-graphique
+        for trace in fig2_px.data:
+            fig.add_trace(trace, row=1, col=2)
+
+        # Mettre à jour la mise en page des sous-graphiques
+        fig.update_layout(
+            title_text="Comparaison de l'Évolution des Incidents et des Signalements en France (2020-2024)",
+            title_font_size=18,
+            height=550,  # Ajustez la hauteur de la figure globale
+            showlegend=True,  # Affiche les légendes pour chaque trace
+            xaxis=dict(
+                title="Année",
+                tickmode="array",
+                tickvals=df1["Années"].unique().tolist(),
+            ),
+            xaxis2=dict(
+                title="Année",
+                tickmode="array",
+                tickvals=df1["Années"].unique().tolist(),
+            ),
+            yaxis=dict(title="Nombre d'Incidents"),
+            yaxis2=dict(title="Nombre de Signalements"),
+            hovermode="x unified",
+        )
+
+        # Afficher la figure dans Streamlit
+        st.plotly_chart(fig, use_container_width=True)
+
+    except FileNotFoundError:
+        st.error(
+            "Le fichier 'Principales menaces en France - Evolution des incidents.csv' n'a pas été trouvé. Veuillez vérifier le chemin."
+        )
+    except Exception as e:
+        st.error(
+            f"Une erreur est survenue lors du chargement ou de l'affichage des données : {e}"
+        )
+    st.markdown(
+        """
+    #### Augmentation Générale des Incidents de Sécurité (Nombres incidents) :
+
+On observe une tendance globale à la hausse du nombre d'incidents signalés. Partant de 759 en 2020, ce chiffre atteint 1361 en 2024.
+Bien qu'il y ait eu un léger recul en 2022 par rapport à 2021, la croissance est repartie de manière significative en 2023 et 2024, suggérant une intensification du paysage des menaces.
+
+#### Capacités de Traitement des Vulnérabilités en Hausse (Nombre de dossiers CVE traités par la CERT-FR) :
+
+Le nombre de dossiers CVE traités par la CERT-FR a connu une augmentation constante et rapide, passant de seulement 7 en 2020 à 40 en 2024.
+Cela peut indiquer une augmentation du nombre de vulnérabilités découvertes et/ou une capacité accrue de la CERT-FR à les identifier, les analyser et y répondre, démontrant une réactivité et un engagement croissants de l'agence nationale.
+
+#### Évolution des Signalements (Nombres signalements) :
+
+Après une légère fluctuation entre 2020 et 2022, on constate un bond très important du nombre de signalements en 2024 (3004), après une donnée manquante pour 2023.
+La donnée manquante pour 2023 est une lacune notable. L'explosion en 2024 pourrait signifier une sensibilisation accrue des organisations et du public à signaler les incidents, ou une amélioration des plateformes et processus de signalement.
+
+#### Nouvelles Métriques et Élargissement de la Surveillance :
+
+Les colonnes Nombre événements de sécurité et Attaques par rançongiciel n'apparaissent qu'à partir de 2023 et 2024 respectivement (avec des valeurs NaN avant).
+Cela suggère un élargissement du périmètre de surveillance et de collecte de données pour inclure des catégories plus spécifiques d'événements ou d'attaques.
+Pour Nombre événements de sécurité, le chiffre passe de 3703 en 2023 à 4386 en 2024, indiquant une augmentation de ces événements plus "génériques" une fois qu'ils sont suivis.
+Pour les Attaques par rançongiciel, 144 attaques ont été enregistrées en 2024. C'est une donnée de référence importante pour le futur, mais l'absence d'historique ne permet pas de dégager une tendance pour l'instant. Cela souligne l'importance croissante de cette menace spécifique, justifiant son suivi dédié.
+
+#### Résumé 
+
+Le tableau dépeint un paysage de la cybersécurité en France qui est de plus en plus dynamique et complexe.
+
+La menace cyber est clairement en augmentation, comme en témoigne la hausse constante du nombre d'incidents.
+Simultanément, les capacités de détection, de traitement et de signalement s'améliorent et s'étendent, ce qui est positif dans la lutte contre la cybercriminalité.
+L'introduction de nouvelles métriques au fil du temps montre une maturité croissante dans la compréhension et le suivi des différentes facettes de la cybermenace par les autorités compétentes.
+"""
     )

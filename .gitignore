@@ -1,7 +1,8 @@
 .venv
 *.ipynb
-*.csv
 *.parquet
 __pycache__
 .env
 *.pdf
+cve.csv
+Global_Cybersecurity_Threats_2015-2024.csv
