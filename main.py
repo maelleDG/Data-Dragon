@@ -12,6 +12,7 @@ pages = {
     ],
     "Renseignement sur les menaces": [  # Equivalent de "CyberThreatIntelligence"
         st.Page("pages/1CyberThreatIntelligence.py", title="Cyber Threat Intelligence"),
+        st.Page("pages/veille_techno.py", title="Veille Cyber Threat Intelligence"),
     ],
     "Analyse du marché": [  # Equivalent de "Étude française"
         st.Page("pages/2Etude_française.py", title="Étude française"),
