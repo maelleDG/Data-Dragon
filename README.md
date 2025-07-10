@@ -28,3 +28,13 @@ phishing => attention aux mails frauduleux
 malware => attention à ne pas installer n'importe quoi
 
 ## Instructions d'installation
+
+### Veille technologique
+
+Pour accéder aux API connectées, il faudra aller demander les clés API sur les sites suivants:
+- https://newsapi.org/
+- https://gnews.io/
+- https://otx.alienvault.com/api
+
+Une fois cela fait, il faut créer, dans vs code, un dossier .env dans lequel inscrire les codes API.
+NE PAS OUBLIER DE METTRE .ENV DANS .GITIGNORE
