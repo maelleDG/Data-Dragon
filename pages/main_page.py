@@ -1,28 +1,47 @@
 import streamlit as st
 import theme  # Importe votre fichier de thème
+import streamlit.components.v1 as components
 
-theme.set_page_defaults()
-
-col_left, col_center, col_right = st.columns([1, 2, 1])
-
-# --- Contenu de la Page Principale ---
-with col_center:
-    theme.display_logo(width=300)  # Utilisez la fonction du thème pour afficher le logo
-
-    st.markdown(
-        f"<p class='slogan'>DATA ANALYTICS • AND CYBERSECURITY AGENCY</p>",
-        unsafe_allow_html=True,
-    )
+# Image de couverture
+st.image(
+    "logo_bandeau.png",
+    use_container_width=True,
+)
 
 # Introduction (avec les balises <strong> pour le gras)
 st.markdown(
     """
-<div class="big-text">
-Bienvenue chez <strong>Cyber Dragon</strong>, votre partenaire de confiance pour naviguer dans le paysage complexe de la <strong>cybersécurité</strong> et exploiter la puissance de l'<strong>analyse de données</strong>. Nous protégeons votre entreprise contre les menaces numériques tout en transformant vos données brutes en informations stratégiques.
+<div style="text-align: center; font-size: 24px;">
+    <strong>Bienvenue chez Cyber Dragon</strong>, votre partenaire de confiance pour naviguer dans le paysage complexe de la <strong>cybersécurité</strong> et exploiter la puissance de l'<strong>analyse de données</strong>. Nous protégeons votre entreprise contre les menaces numériques tout en transformant vos données brutes en informations stratégiques.
 </div>
 """,
     unsafe_allow_html=True,
 )
+
+
+#LIVE MAP
+
+# --- Carte dans un encadré élégant ---
+components.html(
+    """
+    <div style='display: flex; justify-content: center;'>
+        <div style='background-color: grey; padding: 15px; border-radius: 10px; box-shadow: 2px 2px 12px rgba(0,0,0,0.2);'>
+            <iframe src="https://cybermap.kaspersky.com/en/widget/dynamic/dark"
+                    style="border: none; width: 80vw; max-width: 1200px; height: 700px; border-radius: 8px;">
+            </iframe>
+        </div>
+    </div>
+    """,
+    height=750,
+    scrolling=False
+)
+
+# --- Description centrée ---
+st.markdown("""
+<p style='text-align: center; font-size: 18px; color: lightgray;'>
+Suivez en direct les cyberattaques détectées dans le monde par Kaspersky. Cette carte interactive vous permet de visualiser les menaces en temps réel.
+</p>
+""", unsafe_allow_html=True)
 
 # --- Nos Services (Section) ---
 st.markdown(

@@ -100,7 +100,7 @@ def set_page_defaults():
 from PIL import Image
 
 
-def display_logo(path="logo.png", width=None):
+def display_logo(path="logo_bandeau.png", width=None):
     try:
         logo = Image.open(path)
         col1, col2, col3 = st.columns([1, 2, 1])
