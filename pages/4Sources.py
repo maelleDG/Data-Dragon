@@ -5,24 +5,19 @@ import theme  # Importe votre fichier de thème
 theme.set_page_defaults()  # Optionnel si main.py gère déjà la config globale, mais bonne pratique
 theme.apply_theme()
 
-st.title("Nos Services Détaillés")
+# Image de couverture
+st.image(
+    "logo_bandeau.png",
+    use_container_width=True,
+)
 
-# Contenu spécifique à la page des services
 st.markdown(
     """
-<div class="big-text">
-Découvrez en détail comment Cyber Dragon peut transformer votre approche de la sécurité et de l'analyse.
-</div>
-""",
+    <h1 style='text-align: center;'>Sources de données</h1>
+    """,
     unsafe_allow_html=True,
 )
 
-st.subheader("Audit et Pentest")
-st.write("Nous identifions les vulnérabilités de vos systèmes...")
-
-# ... et ainsi de suite ...
-
-st.header("Sources des données")
 
 with st.expander("Cliquez pour voir les sources détaillées"):
     st.markdown(
@@ -41,3 +36,15 @@ with st.expander("Cliquez pour voir les sources détaillées"):
         * Source: https://www.mordorintelligence.com/fr/industry-reports/france-cybersecurity-market
     """
     )
+
+
+# Footer
+st.markdown("---")
+st.markdown(
+    f"""
+    <div style="text-align: center; color: #666; margin-top: 2rem;">
+        <p style='text-align: center; color: {theme.COLORS['GREY_SLOGAN']}; font-size: 0.9em;'>© 2025 Cyber Dragon. Tous droits réservés.</p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)

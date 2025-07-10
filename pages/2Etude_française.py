@@ -15,6 +15,13 @@ from plotly.subplots import make_subplots
 theme.set_page_defaults()  # Optionnel si main.py gère déjà la config globale, mais bonne pratique
 theme.apply_theme()
 
+
+# Image de couverture
+st.image(
+    "logo_bandeau.png",
+    use_container_width=True,
+)
+
 st.markdown(
     """
     <h1 style='text-align: center;'>Contexte du marché et menace en France</h1>
