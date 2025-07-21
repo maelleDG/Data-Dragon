@@ -4,10 +4,11 @@ import os
 from dotenv import load_dotenv
 import theme  # Importe votre fichier de thème
 from packages.collecte import NewsCollector
-from packages.cybermeteo_ia import CyberThreatChatbot
 from collections import Counter
 from datetime import datetime, timedelta
 import plotly.express as px
+from packages.meteo import cybermeteo_ia
+import google.generativeai as genai
 
 load_dotenv()
 
@@ -18,7 +19,7 @@ theme.apply_theme()
 
 @st.cache_resource
 def initialize_components():
-    return NewsCollector(), CyberThreatChatbot()
+    return NewsCollector()
 
 
 def cyberveille():
@@ -26,7 +27,7 @@ def cyberveille():
     st.markdown(
         """
     <div class="main-header">
-        <h1>🔒 Cyber Threat Intelligence</h1>
+        <h1 style="text-align: center;">🔒 Cyber Threat Intelligence</h1>
         <p style="text-align: center; color: white; margin: 0;">Système de Veille Technologique & Chatbot Météo Cybercriminalité</p>
     </div>
     """,
@@ -34,7 +35,7 @@ def cyberveille():
     )
 
     # Initialisation
-    collecte, cybermeteo_ia = initialize_components()
+    collecte = initialize_components()
 
     # Sidebar pour les paramètres
     st.sidebar.title("⚙️ Configuration")
@@ -100,6 +101,39 @@ def cyberveille():
         else:
             st.warning(
                 "⚠️ GNews API n'est pas configuré. Veuillez définir GNEWS_API_KEY dans votre fichier .env pour l'activer."
+            )
+
+    # OTX Vault API
+    with st.sidebar.expander("🛡️ OTX Vault API"):
+        # Vérifie si la clé API est présente
+        has_otx_key = bool(collecte.apis_config["otx"]["api_key"])
+
+        # La checkbox est initialisée à True si la clé est présente et l'API est déjà activée
+        # Ou à False si la clé est absente ou si l'API était désactivée.
+        otx_enabled_from_ui = st.checkbox(
+            "Activer OTX Vault API",
+            value=collecte.apis_config["otx"]["enabled"]
+            and has_otx_key,  # Coché si clé présente ET déjà activé
+            disabled=not has_otx_key,  # Désactive la checkbox si pas de clé
+            help="Cochez pour activer OTX Vault API. Nécessite une clé API configurée dans le fichier .env",
+        )
+
+        # Met à jour l'état d'activation de l'API dans l'objet 'collecte'
+        # Seulement si l'état de la checkbox a changé ou si c'est la première exécution
+        if otx_enabled_from_ui != collecte.apis_config["otx"]["enabled"]:
+            collecte.configure_api("otx", enabled=otx_enabled_from_ui)
+            st.rerun()  # Reruns pour appliquer le changement immédiatement
+
+        if has_otx_key:
+            if collecte.apis_config["otx"]["enabled"]:
+                st.success("✅ OTX Vault API est configuré et actif.")
+            else:
+                st.info(
+                    "ℹ️ OTX Vault API est configuré mais désactivé. Cochez la case pour l'activer."
+                )
+        else:
+            st.warning(
+                "⚠️ OTX Vault API n'est pas configuré. Veuillez définir OTX_API_KEY dans votre fichier .env pour l'activer."
             )
 
     # Flux RSS
@@ -302,79 +336,99 @@ def cyberveille():
             )
 
     with tab3:
+        GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
         st.header("🤖 Chatbot Météo Cybercriminalité")
 
-        st.markdown(
-            """
-        <div class="chatbot-container">
-            <h4>💬 Assistant Cyber Threat Intelligence</h4>
-            <p>Posez-moi vos questions sur la cybersécurité en France ou demandez un rapport météo !</p>
-        </div>
-        """,
-            unsafe_allow_html=True,
-        )
+        # === Météo Cyber (mise à jour automatique) ===
+        col_weather, col_chat = st.columns([1, 2])
 
-        # Historique des conversations
-        if "chat_history" not in st.session_state:
-            st.session_state.chat_history = []
+        # partie cyber météo
+        with col_weather:
+            st.markdown("### 🌤️ Météo Cyber du Jour")
+            if st.button("🚀 Générer le rapport du jour"):
+                with st.spinner("Génération du rapport..."):
+                    articles = cybermeteo_ia.fetch_fresh_articles()
+                    report = cybermeteo_ia.generate_cyber_weather_report(articles)
+                st.markdown(report)
 
-        # Affichage de l'historique
-        for i, (question, response) in enumerate(st.session_state.chat_history):
-            st.markdown(
-                f"""
-            <div class="chat-message">
-                <strong>Vous:</strong> {question}
-            </div>
-            <div class="chat-response">
-                <strong>Assistant:</strong> {response}
-            </div>
-            """,
-                unsafe_allow_html=True,
-            )
-
-        # Interface de chat
-        user_input = st.text_input(
-            "Votre question:",
-            placeholder="Ex: Donne-moi la météo cybercriminalité actuelle",
-        )
-
-        col1, col2, col3 = st.columns([1, 1, 4])
-
-        with col1:
-            if st.button("📤 Envoyer"):
-                if user_input:
-                    response = cybermeteo_ia.respond_to_query(user_input)
-                    st.session_state.chat_history.append((user_input, response))
-                    st.rerun()
-
-        with col2:
-            if st.button("🌡️ Météo"):
-                weather_report = cybermeteo_ia.get_weather_report()
-                st.session_state.chat_history.append(
-                    "Météo cybercriminalité", weather_report
+                today = cybermeteo_ia.datetime.now(cybermeteo_ia.timezone.utc).strftime(
+                    "%Y-%m-%d"
                 )
-                st.rerun()
+                st.download_button(
+                    "💾 Télécharger le rapport",
+                    data=report,
+                    file_name=f"cyber_weather_report_{today}.md",
+                    mime="text/markdown",
+                )
 
-        # Raccourcis
-        st.subheader("🔧 Raccourcis")
-        col1, col2, col3 = st.columns(3)
+        # partie chatbot
+        with col_chat:
+            st.markdown("### 🤔 Questions à poser, URL, adresse mail à vérifier")
+            genai.configure(api_key=GOOGLE_API_KEY)
+            # Prompt système
+            system_prompt = """
+            Tu es un expert en cybersécurité et en veille sur les menaces, spécialisé sur le contexte français.
+            Ton objectif est de fournir des informations précises, complètes, et à jour sur les menaces cyber, les incidents, les vulnérabilités et les bonnes pratiques.
+            Lorsque l'utilisateur pose une question, utilise les informations suivantes (si pertinentes) pour y répondre.
+            Tu donnes des réponses précises pour un public qui te donnera, soit une URL, une adresse mail ( a vérifier sur : https://haveibeenpwned.com/)
+            que tu verifera, analysera afin de savoir si ce dernier est sûr.
+            Si la question ne concerne pas la cyber sécurité, indique que tu ne peux répondre qu'à ce sujet.
+            """
 
-        with col1:
-            if st.button("📊 Tendances actuelles"):
-                response = "📈 **Tendances Cybersécurité France**\n\n• Hausse de 40% des attaques par ransomware\n• Multiplication des campagnes de phishing ciblant les PME\n• Émergence de nouvelles techniques d'ingénierie sociale\n• Augmentation des attaques sur les infrastructures critiques"
-                st.session_state.chat_history.append("Tendances actuelles", response)
-                st.rerun()
+            # Fonction pour initialiser le chat
+            def init_chat():
+                model = genai.GenerativeModel("gemini-2.0-flash")
+                chat = model.start_chat(
+                    history=[
+                        {"role": "user", "parts": [system_prompt]},
+                        {
+                            "role": "model",
+                            "parts": [
+                                "Compris, je suis prêt à te proposer des recommandations."
+                            ],
+                        },
+                    ]
+                )
+                return chat
 
-        with col2:
-            if st.button("🎯 Secteurs à risque"):
-                response = "🎯 **Secteurs les plus ciblés en France**\n\n1. **Santé** - Hôpitaux et cliniques\n2. **Éducation** - Universités et écoles\n3. **Collectivités** - Mairies et services publics\n4. **Finance** - Banques et assurances\n5. **Industrie** - PME manufacturières"
-                st.session_state.chat_history.append("Secteurs à risque", response)
-                st.rerun()
+            # Initialisation du chat
+            if "chat" not in st.session_state:
+                st.session_state.chat = init_chat()
+                st.session_state.messages = [
+                    {"role": "assistant", "text": "Aucune reco disponible ? 🔎 "}
+                ]
 
-        with col3:
-            if st.button("🛡️ Recommandations"):
-                response = "🛡️ **Recommandations de sécurité**\n\n• Mettre en place une authentification multi-facteurs\n• Former régulièrement les employés aux risques cyber\n• Maintenir les systèmes à jour\n• Effectuer des sauvegardes régulières\n• Surveiller les activités réseau\n• Établir un plan de réponse aux incidents"
-                st.session_state.chat_history.append("Recommandations", response)
+            # Champ de saisie
+            user_input = st.chat_input("URL, Adresse mail ou fichier ?")
+
+            # Affichage de la discussion
+            for msg in st.session_state.messages:
+                with st.chat_message(msg["role"]):
+                    st.markdown(msg["text"])
+
+            # Traitement du message
+            if user_input:
+                # Afficher le message de l'utilisateur
+                st.session_state.messages.append({"role": "user", "text": user_input})
+                with st.chat_message("user"):
+                    st.markdown(user_input)
+
+                # Obtenir la réponse de Gemini
+                response = st.session_state.chat.send_message(user_input)
+
+                # Afficher la réponse du bot
+                st.session_state.messages.append(
+                    {"role": "assistant", "text": response.text}
+                )
+                with st.chat_message("assistant"):
+                    st.markdown(response.text)
+
+            # Bouton de réinitialisation en dessous de la zone de texte du chatbot
+            if st.button("Réinitialiser SécuBot 🤖", key="reset_button"):
+                st.session_state.chat = init_chat()
+                st.session_state.messages = [
+                    {"role": "assistant", "text": "URL, Adresse mail ou fichier  ? 🔎"}
+                ]
                 st.rerun()
 
     with tab4:
@@ -404,11 +458,18 @@ def cyberveille():
         st.subheader("📰 Analyse des Sources")
 
         source_counts = Counter(a["source"] for a in articles)
+        df_sources = pd.DataFrame(
+            {
+                "Source": list(source_counts.keys()),
+                "Nombre d'articles": list(source_counts.values()),
+            }
+        )
+
         fig_sources = px.bar(
-            x=list(source_counts.keys()),
-            y=list(source_counts.values()),
-            title="Répartition par Source",
-            labels={"x": "Source", "y": "Nombre d'articles"},
+            df_sources,
+            x="Source",
+            y="Nombre d'articles",
+            labels={"Source": "Source", "Nombre d'articles": "Nombre d'articles"},
         )
         st.plotly_chart(fig_sources, use_container_width=True)
 

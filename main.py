@@ -24,9 +24,6 @@ pages = {
             "pages/cyberveille.py",
             title="Veille Technologique & Chatbot Météo Cybercriminalité",
         ),
-        st.Page(
-            "pages/3Chatbot.py", title="Assistant IA"
-        ),  # Renommé pour plus de clarté
     ],
     "Sources": [
         st.Page("pages/4Sources.py", title="Nos sources"),
