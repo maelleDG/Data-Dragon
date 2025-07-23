@@ -87,10 +87,10 @@ def _create_attack_figure():
 
 # Fonction publique à appeler dans Streamlit
 def display_attacks_chart():
-    st.header("🧨 Evolution of Cyberattack Types in the U.S.")
+    st.header("🧨 Évolution des types de cyberattaques aux USA")
     st.markdown(
-        "This chart shows the evolution of various cyberattack types in the United States between 2015 and 2024. "
-        "It highlights the growing threat landscape and helps identify which vectors are increasing most rapidly."
+        "Ce graphique montre l'évolution des différents types de cyberattaques aux États-Unis entre 2015 et 2024. "
+        "Il met en évidence le paysage de menaces croissant et aide à identifier quels vecteurs augmentent le plus rapidement."
     )
     fig = _create_attack_figure()
     st.plotly_chart(fig, use_container_width=True)

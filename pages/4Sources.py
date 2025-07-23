@@ -34,6 +34,8 @@ with st.expander("Cliquez pour voir les sources détaillées"):
     * **MordorIntelligence.com :**
         * Analyse de la taille et de la part du marché de la cybersécurité en France – Tendances et prévisions de croissance (2024 – 2029) 
         * Source: https://www.mordorintelligence.com/fr/industry-reports/france-cybersecurity-market
+    * **Études US :**
+        * FBI IC3 (Reuters/Axios), IBM Security, Sophos, Cybersecurity Ventures, VikingCloud, MRT, Palo Alto Networks, CrowdStrike.
     """
     )
 

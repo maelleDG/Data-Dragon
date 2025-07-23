@@ -46,6 +46,11 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+st.image(
+    "logo_bandeau.png",
+    use_container_width=True,
+)
+
 # ============= EN-TÊTE & CONTEXTE US ============= #
 st.markdown(
     "<h1 style='text-align: center;'>Marché & Menaces de la Cybercriminalité aux États‑Unis</h1>",
@@ -56,7 +61,7 @@ st.markdown(
 st.markdown(
     """
 <div class="big-text">
-    <h2>2. Marché de la cybersécurité</h2>
+    <h2>Marché de la cybersécurité</h2>
     <span class="tag">+85 milliards USD en 2024</span>
     <ul>
         <li><strong>Croissance annuelle :</strong> 10–12 %</li>
@@ -132,8 +137,9 @@ with st.expander("🔓 Vulnérabilités & Facteurs humains aux USA"):
 
 # ============ FOOTER ============ #
 st.markdown("---")
+
+
 st.markdown(
-    """
-*Sources : FBI IC3 (Reuters/Axios), IBM Security, Sophos, Cybersecurity Ventures, VikingCloud, MRT, Palo Alto Networks, CrowdStrike.*
-"""
+    f"<p style='text-align: center; color: {theme.COLORS['GREY_SLOGAN']}; font-size: 0.9em;'>© 2025 Cyber Dragon. Tous droits réservés.</p>",
+    unsafe_allow_html=True,
 )
