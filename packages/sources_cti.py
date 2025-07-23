@@ -13,6 +13,8 @@ def display_sources_cti():
     * 🔧 **Analyse de Programmes Malveillants (Malware Analysis) :** Dissection et ingénierie inverse de codes malveillants pour comprendre leurs fonctionnalités et leurs vecteurs d'infection.
     * 📊 **Flux de Menaces Commerciaux et Partenariats :** Accès à des bases de données consolidées et à des informations partagées au sein de communautés de cybersécurité professionnelles.
     * ↩️ **Retours d'Expérience Incident Response :** Analyse des incidents réels pour identifier les tactiques, techniques et procédures (TTPs) couramment utilisées et affiner les stratégies de défense.
+
+    
     """
     )
     st.write(

@@ -5,7 +5,6 @@ __pycache__
 .env
 *.pdf
 cve.csv
-Global_Cybersecurity_Threats_2015-2024.csv
 Theme.json
 financial_loss_map.html
 map_with_pie_charts.html
