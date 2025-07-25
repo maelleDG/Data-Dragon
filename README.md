@@ -38,3 +38,7 @@ Pour accéder aux API connectées, il faudra aller demander les clés API sur le
 
 Une fois cela fait, il faut créer, dans vs code, un dossier .env dans lequel inscrire les codes API.
 NE PAS OUBLIER DE METTRE .ENV DANS .GITIGNORE
+
+## Site de déploiement 
+
+https://data-dragon.streamlit.app/
